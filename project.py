@@ -1,9 +1,10 @@
 import pandas
 import numpy as np
 
+
 class Project:
     """class for the whole project
-    """ 
+    """
     def __init__(self, data_path):
         """read in an excel file and extract data to create new project
 
@@ -25,18 +26,20 @@ class Project:
         raw_datas = np.delete(raw_datas, slice(valid_line_count, None), axis=0)
         # remove empty column
         valid_column_count = 7
-        raw_datas = np.delete(raw_datas, slice(valid_column_count, None), axis=1)
+        raw_datas = np.delete(raw_datas,
+                              slice(valid_column_count, None),
+                              axis=1)
         # get valid input size
         w, h = np.shape(raw_datas)
         print(f'Read in excel data size: {w}*{h}')
         # extract data
         self.data = dict(users=list(raw_datas[:, 0]),
-            dates=list(raw_datas[:, 1]),
-            actions=list(raw_datas[:, 2]),
-            urls=list(raw_datas[:, 3]),
-            contents=list(raw_datas[:, 4]),
-            to_users=list(raw_datas[:, 5]),
-            topic_ids=list(raw_datas[:, 6]))
+                         dates=list(raw_datas[:, 1]),
+                         actions=list(raw_datas[:, 2]),
+                         urls=list(raw_datas[:, 3]),
+                         contents=list(raw_datas[:, 4]),
+                         to_users=list(raw_datas[:, 5]),
+                         topic_ids=list(raw_datas[:, 6]))
         print('Successfully extract data')
 
     def get_user_count(self):
@@ -60,6 +63,3 @@ class Project:
                 action_counts[action] = 0
             action_counts[action] += 1
         return action_counts
-
-
-

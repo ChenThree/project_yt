@@ -1,6 +1,7 @@
 from matplotlib import pyplot
- 
+
 from project import Project
+
 
 def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
     """plot pie chart according to input counts dict
@@ -27,13 +28,13 @@ def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
         keys[0], keys[-1] = keys[-1], keys[0]
         values[0], values[-1] = values[-1], values[0]
     # plot
-    pyplot.figure(figsize=(20,10))
+    pyplot.figure(figsize=(20, 10))
     pyplot.title(title)
-    pyplot.pie(values, 
-        labels=keys, 
-        autopct='%1.1f%%', 
-        labeldistance=1.1,
-        startangle=startangle)
+    pyplot.pie(values,
+               labels=keys,
+               autopct='%1.1f%%',
+               labeldistance=1.1,
+               startangle=startangle)
     pyplot.legend(keys, loc='upper right')
     pyplot.axis('equal')
     pyplot.show()
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     # get action counts and generate graph
     action_counts = project.get_action_counts()
     print('action_counts ==', action_counts)
-    plot_pie_chart(action_counts, 
-        title='pie chart for action counts',
-        startangle=110,
-        swap=True)
+    plot_pie_chart(action_counts,
+                   title='pie chart for action counts',
+                   startangle=110,
+                   swap=True)
