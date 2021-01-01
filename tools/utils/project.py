@@ -183,8 +183,9 @@ class Project:
             edge_count (int)
             edges (dict)
         """
-        # get users
+        # get users and actions
         users = self.get_users()
+        actions = self.get_action_types()
         # get edge_count and edges dict
         # edges[user] is a dict list of all edges from user
         # dict(to=xx, weight=xx)
@@ -192,6 +193,8 @@ class Project:
         edges = dict()
         for user in users:
             edges[user] = list()
+        for action_type in actions:
+            edges[action_type] = list()
         # get edge and weight
         for from_user, edge_action, to_user in zip(self.data['users'],
                                                    self.data['actions'],
@@ -201,7 +204,12 @@ class Project:
                 continue
             # check empty input
             if not isinstance(to_user, str):
-                continue
+                if edge_action in [
+                        'created a topic', 'added a blogpost', 'added a design'
+                ]:
+                    to_user = edge_action
+                else:
+                    continue
             edge_count += 1
             # check whether exist
             flag = False
@@ -213,10 +221,6 @@ class Project:
             # not exist then create new edge
             if flag is False:
                 edges[from_user].append(dict(to=to_user, weight=1))
-        # save result
-        if action == 'all actions':
-            self.edge_count = edge_count
-            self.edges = edges
         return edge_count, edges
 
     def get_degrees(self):
@@ -226,16 +230,19 @@ class Project:
             in_degrees (dict)
             out_degrees (dict)
         """
-        # get edges
+        # get users, edges and acitons
+        actions = self.get_action_types()
+        users = self.get_users()
         _, edges = self.get_edges()
         # cal degrees
         in_degrees = dict()
         out_degrees = dict()
-        for user in edges.keys():
+        for user in users:
             in_degrees[user] = 0
             out_degrees[user] = 0
         for from_user, user_edges in edges.items():
             for edge in user_edges:
-                out_degrees[from_user] += 1
-                in_degrees[edge['to']] += 1
+                out_degrees[from_user] += edge['weight']
+                if edge['to'] not in actions:
+                    in_degrees[edge['to']] += edge['weight']
         return in_degrees, out_degrees

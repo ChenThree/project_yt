@@ -3,6 +3,7 @@ import wordcloud
 import networkx as nx
 from matplotlib import pyplot
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
 
 
 def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
@@ -184,6 +185,15 @@ def plot_net_graph(edges, title='net graph'):
 
 
 def plot_user_degree_KMeans_graph(pos, title='user degree Kmeans graph'):
+    """KMeans to get user cluster
+
+    Args:
+        pos (np.array): input [x, y]
+        title (str, optional): figure title. Defaults to 'user degree Kmeans graph'.
+    """
+    # rescale
+    mms = MinMaxScaler()
+    pos = mms.fit_transform(pos)
     # KMeans
     clf = KMeans(n_clusters=3)
     clf.fit(pos)
@@ -193,5 +203,8 @@ def plot_user_degree_KMeans_graph(pos, title='user degree Kmeans graph'):
     for i in range(len(labels)):
         pyplot.scatter(pos[i, 0], pos[i, 1], c=color[labels[i]])
     pyplot.title(title)
-    pyplot.axis('equal')
+    pyplot.xlim((-0.2, 1.2))
+    pyplot.ylim((-0.2, 1.2))
+    pyplot.xlabel('scaled in degree')
+    pyplot.ylabel('scaled out degree')
     pyplot.show()
