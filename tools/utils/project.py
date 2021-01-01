@@ -55,7 +55,22 @@ class Project:
         user_set = set(self.data['users'])
         return len(user_set)
 
-    def get_action_counts(self):
+    def get_action_types(self):
+        """get action types list
+
+        Returns:
+            action_types (list)
+        """
+        # avoid repeatedly calculating
+        if hasattr(self, 'action_types'):
+            return self.action_types
+        self.action_types = list()
+        for action in self.data['actions']:
+            if action not in self.action_types:
+                self.action_types.append(action)
+        return self.action_types
+
+    def get_action_counts_by_type(self):
         """get counts of different actions
 
         Returns:
@@ -68,12 +83,48 @@ class Project:
             action_counts[action] += 1
         return action_counts
 
-    def get_user_counts_by_month(self):
-        # deal with raw dates
-        dates = dict()
+    def get_action_counts_by_month(self):
+        # deal with raw dates and gen action counts
+        action_counts = dict()
         for date in self.data['dates']:
             new_date = '-'.join(date.split('-')[:2])
-            if new_date not in dates:
-                dates[new_date] = 0
-            dates[new_date] += 1
-        return dates
+            if new_date not in action_counts:
+                action_counts[new_date] = 0
+            action_counts[new_date] += 1
+        return action_counts
+
+    def get_action_counts_by_year_and_type(self):
+        """get counts of different actions by year
+
+        Returns:
+            action_counts: dict
+        """
+        # format like: {'date':{'type':count, ...}, ...}
+        action_counts = dict()
+        for date, action in zip(self.data['dates'], self.data['actions']):
+            new_date = '-'.join(date.split('-')[:1])
+            if new_date not in action_counts:
+                action_counts[new_date] = dict()
+            if action not in action_counts[new_date]:
+                action_counts[new_date][action] = 0
+            action_counts[new_date][action] += 1
+        return action_counts
+
+    def get_user_counts_by_month(self):
+        """get user counts by month
+
+        Returns:
+            user_counts (dict)
+        """
+        # deal with raw dates and gen user sets
+        user_sets = dict()
+        for user, date in zip(self.data['users'], self.data['dates']):
+            new_date = '-'.join(date.split('-')[:2])
+            if new_date not in user_sets:
+                user_sets[new_date] = set()
+            user_sets[new_date].add(user)
+        # get user counts from sets
+        user_counts = dict()
+        for date, user_set in user_sets.items():
+            user_counts[date] = len(user_set)
+        return user_counts

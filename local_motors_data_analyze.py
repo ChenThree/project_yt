@@ -1,6 +1,7 @@
 from tools.utils.project import Project
 from tools.utils.get_script import get_script
 
+
 def main():
     # read in data
     data_path = './data/1112 RF(2).xlsx'
