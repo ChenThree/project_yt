@@ -67,3 +67,13 @@ class Project:
                 action_counts[action] = 0
             action_counts[action] += 1
         return action_counts
+
+    def get_user_counts_by_month(self):
+        # deal with raw dates
+        dates = dict()
+        for date in self.data['dates']:
+            new_date = '-'.join(date.split('-')[:2])
+            if new_date not in dates:
+                dates[new_date] = 0
+            dates[new_date] += 1
+        return dates
