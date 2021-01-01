@@ -1,5 +1,5 @@
-from utils.project import Project
-from utils.plot_helpers import plot_pie_chart
+from tools.utils.project import Project
+from tools.utils.get_script import get_script
 
 def main():
     # read in data
@@ -15,15 +15,9 @@ def main():
     except Exception:
         raise ValueError('Please input int in 1 ~ 13')
 
-    # print user count
-    print('user_count ==', project.get_user_count())
-    # get action counts and generate graph
-    action_counts = project.get_action_counts()
-    print('action_counts ==', action_counts)
-    plot_pie_chart(action_counts,
-                   title='pie chart for action counts',
-                   startangle=110,
-                   swap=True)
+    # use specific script to analyze
+    script = get_script(analyze_type)
+    script(project)
 
 
 if __name__ == "__main__":

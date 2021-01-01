@@ -42,7 +42,8 @@ class Project:
                          topic_ids=list(raw_datas[:, 6]))
         # fix actions with 2 spaces
         for i in range(len(self.data['actions'])):
-            self.data['actions'][i] = self.data['actions'][i].replace('  ', ' ')
+            self.data['actions'][i] = self.data['actions'][i].replace(
+                '  ', ' ')
         print('Successfully extract data')
 
     def get_user_count(self):
