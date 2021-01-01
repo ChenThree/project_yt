@@ -28,6 +28,8 @@ def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
     if swap is True:
         keys[0], keys[-1] = keys[-1], keys[0]
         values[0], values[-1] = values[-1], values[0]
+        keys[2], keys[-3] = keys[-3], keys[2]
+        values[2], values[-3] = values[-3], values[2]
     # plot
     pyplot.figure(figsize=(20, 10))
     pyplot.title(title)
@@ -125,7 +127,7 @@ def plot_bar_chart_by_types(counts, action_types, title='bar chart'):
     for _, value in values.items():
         pyplot.bar(np.arange(len(keys)) + offset, value, width=0.07)
         offset += 0.07
-    pyplot.xticks(ticks=np.arange(len(keys)) + 0.2, labels=keys)
+    pyplot.xticks(ticks=np.arange(len(keys)) + 0.3, labels=keys)
     pyplot.legend(action_types, loc='upper right')
     pyplot.show()
 

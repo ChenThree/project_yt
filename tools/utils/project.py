@@ -55,6 +55,15 @@ class Project:
         user_set = set(self.data['users'])
         return len(user_set)
 
+    def get_action_count(self):
+        """get action count
+
+        Returns:
+            action_count (int)
+        """
+        action_set = set(self.data['actions'])
+        return len(action_set)
+
     def get_action_types(self):
         """get action types list
 
@@ -82,6 +91,24 @@ class Project:
                 action_counts[action] = 0
             action_counts[action] += 1
         return action_counts
+
+    def get_action_user_counts_by_type(self):
+        """get user counts of different actions
+
+        Returns:
+            action_user_counts (dict)
+        """
+        # gen user sets
+        action_user_sets = dict()
+        for user, action in zip(self.data['users'], self.data['actions']):
+            if action not in action_user_sets:
+                action_user_sets[action] = set()
+            action_user_sets[action].add(user)
+        # gen counts from sets
+        action_user_counts = dict()
+        for action, user_set in action_user_sets.items():
+            action_user_counts[action] = len(user_set)
+        return action_user_counts
 
     def get_action_counts_by_month(self):
         """get sum action counts by month

@@ -10,7 +10,7 @@ def script_3(project):
     # pie chart
     plot_pie_chart(action_counts,
                    title='pie chart for action counts',
-                   startangle=110,
+                   startangle=90,
                    swap=True)
     # bar chart by month
     action_counts = project.get_action_counts_by_month()
