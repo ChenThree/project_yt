@@ -169,3 +169,55 @@ class Project:
         for date, user_set in user_sets.items():
             user_counts[date] = len(user_set)
         return user_counts
+
+    def get_edges(self, action='all actions'):
+        """get edges for graph drawing
+
+        Args:
+            action (str, optional): selected action to draw, avoid a too complex graph. Defaults to 'all actions'.
+
+        Returns:
+            edge_count (int)
+            edges (dict)
+        """
+        # avoid repeatedly cal
+        if action == 'all actions' and hasattr(self, 'edge_count'):
+            return self.edge_count, self.edges
+        # get users
+        users = self.get_users()
+        # get edge_count and edges dict
+        # edges[user] is a dict list of all edges from user
+        # dict(to=xx, weight=xx)
+        edge_count = 0
+        edges = dict()
+        for user in users:
+            edges[user] = list()
+        # get edge and weight
+        for from_user, edge_action, to_user in zip(self.data['users'],
+                                                   self.data['actions'],
+                                                   self.data['to_users']):
+            # check action type
+            if action != 'all actions' and edge_action != action:
+                continue
+            # check empty input
+            if not isinstance(to_user, str):
+                continue
+            edge_count += 1
+            # check whether exist
+            flag = False
+            for edge in edges[from_user]:
+                if edge['to'] == to_user:
+                    edge['weight'] += 1
+                    flag = True
+                    break
+            # not exist then create new edge
+            if flag is False:
+                edges[from_user].append(dict(to=to_user, weight=1))
+        # save result
+        if action == 'all actions':
+            self.edge_count = edge_count
+            self.edges = edges
+        return edge_count, edges
+
+    def get_degrees(self):
+        pass

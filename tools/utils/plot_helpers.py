@@ -1,5 +1,6 @@
 import numpy as np
 import wordcloud
+import networkx as nx
 
 from matplotlib import pyplot
 
@@ -40,6 +41,7 @@ def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
                startangle=startangle)
     pyplot.legend(keys, loc='upper right')
     pyplot.axis('equal')
+    pyplot.get_current_fig_manager().window.state('zoomed')
     pyplot.show()
 
 
@@ -67,6 +69,7 @@ def plot_line_chart(counts, title='line chart'):
     pyplot.title(title)
     pyplot.plot(keys, values)
     pyplot.xticks(rotation=70)  # not overlap
+    pyplot.get_current_fig_manager().window.state('zoomed')
     pyplot.show()
 
 
@@ -94,6 +97,7 @@ def plot_bar_chart(counts, title='bar chart'):
     pyplot.title(title)
     pyplot.bar(keys, values)
     pyplot.xticks(rotation=70)  # not overlap
+    pyplot.get_current_fig_manager().window.state('zoomed')
     pyplot.show()
 
 
@@ -129,6 +133,7 @@ def plot_bar_chart_by_types(counts, action_types, title='bar chart'):
         offset += 0.07
     pyplot.xticks(ticks=np.arange(len(keys)) + 0.3, labels=keys)
     pyplot.legend(action_types, loc='upper right')
+    pyplot.get_current_fig_manager().window.state('zoomed')
     pyplot.show()
 
 
@@ -147,4 +152,32 @@ def plot_wordcloud(words):
     pyplot.xticks([])  # no show
     pyplot.yticks([])  # no show
     pyplot.title('wordcloud for contents')
+    pyplot.get_current_fig_manager().window.state('zoomed')
+    pyplot.show()
+
+
+def plot_net_graph(edges, title='net graph'):
+    """plot net graph according to input edges
+
+    Args:
+        edges (dict): input edges
+        title (str, optional): figure title. Defaults to 'net graph'.
+    """
+    # create graph
+    G = nx.Graph()
+    # insert edge
+    for from_user, user_edges in edges.items():
+        for edge in user_edges:
+            G.add_edge(from_user, edge['to'], weight=edge['weight'])
+    # plot graph
+    pyplot.figure(figsize=(20, 20))
+    pos = nx.spring_layout(G, k=0.5, iterations=100)
+    nx.draw_networkx_nodes(G, pos, node_size=20, node_color='red')
+    nx.draw_networkx_edges(G, pos, width=2, arrows=True)
+    nx.draw_networkx_labels(G, pos, font_size=10)
+    weights = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=weights, font_size=7)
+    pyplot.get_current_fig_manager().window.state('zoomed')
+    pyplot.title(title)
+    pyplot.axis('equal')
     pyplot.show()
