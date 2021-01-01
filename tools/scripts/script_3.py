@@ -3,6 +3,8 @@ from ..utils.plot_helpers import plot_pie_chart, plot_bar_chart, plot_bar_chart_
 
 def script_3(project):
     # get action counts and generate graph
+    action_types = project.get_action_types()
+    print('action_types ==', action_types)
     action_counts = project.get_action_counts_by_type()
     print('action_counts ==', action_counts)
     # pie chart
@@ -14,7 +16,6 @@ def script_3(project):
     action_counts = project.get_action_counts_by_month()
     plot_bar_chart(action_counts, title='bar chart for action counts by month')
     # bar chart by year and type
-    action_types = project.get_action_types()
     action_counts = project.get_action_counts_by_year_and_type()
     plot_bar_chart_by_types(
         action_counts,

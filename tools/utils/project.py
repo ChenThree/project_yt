@@ -84,6 +84,11 @@ class Project:
         return action_counts
 
     def get_action_counts_by_month(self):
+        """get sum action counts by month
+
+        Returns:
+            action_counts (dict)
+        """
         # deal with raw dates and gen action counts
         action_counts = dict()
         for date in self.data['dates']:
