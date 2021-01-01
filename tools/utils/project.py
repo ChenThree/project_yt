@@ -55,6 +55,15 @@ class Project:
         user_set = set(self.data['users'])
         return len(user_set)
 
+    def get_users(self):
+        """get users list
+
+        Returns:
+            users (list)
+        """
+        users = list(set(self.data['users']))
+        return users
+
     def get_action_count(self):
         """get action count
 
