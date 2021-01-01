@@ -142,7 +142,7 @@ def plot_wordcloud(words):
     # plot
     pyplot.figure(figsize=(10, 5))
     pyplot.imshow(cloud)
-    pyplot.xticks([]) # no show
-    pyplot.yticks([]) # no show
+    pyplot.xticks([])  # no show
+    pyplot.yticks([])  # no show
     pyplot.title('wordcloud for contents')
     pyplot.show()
