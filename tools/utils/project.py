@@ -44,6 +44,12 @@ class Project:
         for i in range(len(self.data['actions'])):
             self.data['actions'][i] = self.data['actions'][i].replace(
                 '  ', ' ')
+        # fix space in user name
+        for i in range(len(self.data['users'])):
+            if isinstance(self.data['users'][i], str):
+                self.data['users'][i] = self.data['users'][i].strip(' ')
+            if isinstance(self.data['to_users'][i], str):
+                self.data['to_users'][i] = self.data['to_users'][i].strip(' ')
         print('Successfully extract data')
 
     def get_user_count(self):
@@ -79,9 +85,6 @@ class Project:
         Returns:
             action_types (list)
         """
-        # avoid repeatedly calculating
-        if hasattr(self, 'action_types'):
-            return self.action_types
         self.action_types = list()
         for action in self.data['actions']:
             if action not in self.action_types:
@@ -180,9 +183,6 @@ class Project:
             edge_count (int)
             edges (dict)
         """
-        # avoid repeatedly cal
-        if action == 'all actions' and hasattr(self, 'edge_count'):
-            return self.edge_count, self.edges
         # get users
         users = self.get_users()
         # get edge_count and edges dict
@@ -220,4 +220,22 @@ class Project:
         return edge_count, edges
 
     def get_degrees(self):
-        pass
+        """get in_degrees and out_degrees for all users
+
+        Returns:
+            in_degrees (dict)
+            out_degrees (dict)
+        """
+        # get edges
+        _, edges = self.get_edges()
+        # cal degrees
+        in_degrees = dict()
+        out_degrees = dict()
+        for user in edges.keys():
+            in_degrees[user] = 0
+            out_degrees[user] = 0
+        for from_user, user_edges in edges.items():
+            for edge in user_edges:
+                out_degrees[from_user] += 1
+                in_degrees[edge['to']] += 1
+        return in_degrees, out_degrees

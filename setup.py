@@ -5,7 +5,7 @@ from setuptools import setup
 if __name__ == "__main__":
     requirements = [
         'matplotlib', 'jieba', 'numpy', 'xlrd', 'pandas', 'openpyxl',
-        'wordcloud', 'networkx', 'scipy'
+        'wordcloud', 'networkx', 'scipy', 'sklearn'
     ]
     setup(name='data_process_tool',
           version='0.0.1',

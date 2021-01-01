@@ -1,8 +1,8 @@
 import numpy as np
 import wordcloud
 import networkx as nx
-
 from matplotlib import pyplot
+from sklearn.cluster import KMeans
 
 
 def plot_pie_chart(counts, title='pie chart', startangle=0, swap=False):
@@ -178,6 +178,20 @@ def plot_net_graph(edges, title='net graph'):
     weights = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=weights, font_size=7)
     pyplot.get_current_fig_manager().window.state('zoomed')
+    pyplot.title(title)
+    pyplot.axis('equal')
+    pyplot.show()
+
+
+def plot_user_degree_KMeans_graph(pos, title='user degree Kmeans graph'):
+    # KMeans
+    clf = KMeans(n_clusters=3)
+    clf.fit(pos)
+    labels = clf.labels_
+    # plot
+    color = ['r', 'g', 'b']
+    for i in range(len(labels)):
+        pyplot.scatter(pos[i, 0], pos[i, 1], c=color[labels[i]])
     pyplot.title(title)
     pyplot.axis('equal')
     pyplot.show()
