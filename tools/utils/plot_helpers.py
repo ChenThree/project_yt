@@ -138,6 +138,46 @@ def plot_bar_chart_by_types(counts, action_types, title='bar chart'):
     pyplot.show()
 
 
+def plot_bar_chart_by_keywords(counts, title='bar chart'):
+    """plot bar chart by keyword and time (multi bars)
+
+    Args:
+        counts (dict): input counts dict
+        title (str, optional): title for figure. Defaults to 'bar chart'.
+
+    Raises:
+        ValueError: Input counts should be a dict
+    """
+    # check input
+    if not isinstance(counts, dict):
+        raise ValueError('Input counts should be a dict')
+    # get keys list
+    keys = list()
+    words = list()
+    values = list()
+    for i in range(5):
+        values.append(list())
+        words.append(list())
+    for key, value in counts.items():
+        keys.append(key)
+        for i in range(5):
+            values[i].append(list(value.values())[i])
+            words[i].append(list(value.keys())[i])
+    # plot
+    pyplot.figure(figsize=(20, 10))
+    pyplot.title(title)
+    offset = 0
+    for words_by_year, values_by_year in zip(words, values):
+        pyplot.bar(np.arange(len(keys)) + offset, values_by_year, width=0.18)
+        # show words
+        for x, y, word in zip(np.arange(len(keys)) + offset, values_by_year, words_by_year):
+            pyplot.text(x, y + 0.1, word, ha='center', va='bottom', fontsize=6)
+        offset += 0.18
+    pyplot.xticks(ticks=np.arange(len(keys)) + 0.36, labels=keys)      
+    pyplot.get_current_fig_manager().window.state('zoomed')
+    pyplot.show()
+
+
 def plot_wordcloud(words):
     """plot wordcloud according to input words list
 

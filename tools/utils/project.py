@@ -1,5 +1,7 @@
 import pandas
 import numpy as np
+import jieba
+import re
 
 
 class Project:
@@ -305,3 +307,90 @@ class Project:
             user_impacts[user] = in_degrees[user] * 0.6 + \
                 out_degrees[user] * 0.3 + user_keyword_counts[user] * 0.1
         return user_impacts
+
+    def get_stopwords(self, stopword_path):
+        """get stopwords from file
+
+        Args:
+            stopword_path (str): path for stopwords file
+
+        Returns:
+            stopwords (list)
+        """
+        # read in stopwords
+        stopwords = list()
+        with open(stopword_path, 'r', encoding='utf-8') as f:
+            content = f.readlines()
+        for line in content:
+            stopwords.append(line.strip('\n'))
+        return stopwords
+
+    def get_words(self):
+        """get words by jieba and re
+
+        Returns:
+            total_count (int)
+            words (list)
+        """
+        # use jieba to cut word
+        word_counts = dict()
+        words = list()
+        total_count = 0
+        # del stop words
+        stopwords = self.get_stopwords('./stopwords.txt')
+        # use re to filter words
+        r = re.compile('[a-zA-Z]+\'*[a-z]*')
+        for content in self.data['contents']:
+            # avoid empty input
+            if not isinstance(content, str):
+                continue
+            for word in jieba.cut(content):
+                if re.match(r, word) is None or word in stopwords:
+                    continue
+                if word not in word_counts:
+                    word_counts[word] = 0
+                word_counts[word] += 1
+                words.append(word)
+                total_count += 1
+        return total_count, words
+
+    def get_top_keywords_by_year(self):
+        """get sorted top5 keywords by year
+
+        Returns:
+            sorted_keywords_by_year (dict)
+        """
+        # get contents by year
+        contents_by_year = dict()
+        for date, content in zip(self.data['dates'], self.data['contents']):
+            # check empty content
+            if not isinstance(content, str):
+                continue
+            # get year
+            year = date.split('-')[0]
+            if year not in contents_by_year:
+                contents_by_year[year] = ''
+            else:
+                contents_by_year[year] += ' ' + content
+        # del abbr word
+        stopwords = self.get_stopwords('./stopwords.txt')
+        # use re to filter words
+        r = re.compile('[a-zA-Z]+\'*[a-z]*')
+        # get top keywords
+        word_counts = dict()
+        for year, content in contents_by_year.items():
+            word_counts[year] = dict()
+            for word in jieba.cut(content):
+                if re.match(r, word) is None or word in stopwords:
+                    continue
+                if word not in word_counts[year]:
+                    word_counts[year][word] = 0
+                word_counts[year][word] += 1
+        # get sorted result
+        sorted_keywords_by_year = dict()
+        for year, word_counts_by_year in word_counts.items():
+            sorted_keywords_by_year[year] = dict()
+            sorted_word_counts = sorted(word_counts_by_year.items(), key=lambda d:d[1], reverse=True)
+            for i in range(5):
+                sorted_keywords_by_year[year][sorted_word_counts[i][0]] = sorted_word_counts[i][1]
+        return sorted_keywords_by_year
