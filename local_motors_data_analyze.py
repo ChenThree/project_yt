@@ -8,17 +8,21 @@ def main():
     project = Project(data_path)
 
     # start analyze by input int
-    analyze_type = input('Input a int choose analyze type ( 1 ~ 13 ): ')
-    try:
-        analyze_type = int(analyze_type)
-        if analyze_type not in range(1, 14):
-            raise Exception
-    except Exception:
-        raise ValueError('Please input int in 1 ~ 13')
-
-    # use specific script to analyze
-    script = get_script(analyze_type)
-    script(project)
+    analyze_types = input(
+        'Input a int or int list(use space to separate) to choose analyze type ( 1 ~ 13 ): '
+    )
+    analyze_types = analyze_types.split(' ')
+    for analyze_type in analyze_types:
+        try:
+            analyze_type = int(analyze_type)
+            if analyze_type not in range(1, 14):
+                raise Exception
+        except Exception:
+            raise ValueError(
+                f'Please input int in 1 ~ 13, but "{analyze_type}" is read')
+        # use specific script to analyze
+        script = get_script(analyze_type)
+        script(project)
 
 
 if __name__ == "__main__":
