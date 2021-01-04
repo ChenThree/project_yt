@@ -13,8 +13,6 @@ def script_6(project):
     with open('./results/degrees.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['user', 'in_degree', 'out_degree'])
-        for user, in_degree, out_degree in zip(in_degrees.keys(),
-                                               in_degrees.values(),
-                                               out_degrees.values()):
-            writer.writerow([user, in_degree, out_degree])
+        for user in in_degrees.keys():
+            writer.writerow([user, in_degrees[user], out_degrees[user]])
     print('Successfully output result to file: ./results/degrees.csv')

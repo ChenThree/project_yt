@@ -246,3 +246,62 @@ class Project:
                 if edge['to'] not in actions:
                     in_degrees[edge['to']] += edge['weight']
         return in_degrees, out_degrees
+
+    def get_user_keyword_counts(self, keyword_path):
+        """get user key word counts and frequencys
+
+        Args:
+            keywords (str): input keyword list path
+
+        Returns:
+            user_keyword_counts (dict) 
+            user_keyword_frequencys (dict)
+        """
+        # read in keywords
+        keywords = list()
+        with open(keyword_path, 'r') as f:
+            content = f.readlines()
+        for line in content:
+            keywords.append(line.strip('\n'))
+        # get users and user_contents
+        users = self.get_users()
+        user_contents = dict()
+        for user in users:
+            user_contents[user] = ''
+        for user, content in zip(self.data['users'], self.data['contents']):
+            # check empty content
+            if not isinstance(content, str):
+                continue
+            user_contents[user] += ' ' + content
+        # gen user_keyword_counts and user_keyword_frequencys
+        user_keyword_counts = dict()
+        user_keyword_frequencys = dict()
+        for user in users:
+            user_keyword_counts[user] = 0
+            user_keyword_frequencys[user] = 0
+        for keyword in keywords:
+            for user in users:
+                user_keyword_frequencys[user] += user_contents[user].count(
+                    keyword)
+                if keyword in user_contents[user]:
+                    user_keyword_counts[user] += 1
+        return user_keyword_counts, user_keyword_frequencys
+
+    def get_user_impacts(self, keyword_path):
+        """get user impact by degrees and keyword_counts
+
+        Args:
+            keywords (str): input keyword list path
+
+        Returns:
+            user_impacts (dict)
+        """
+        # get degrees and user keyword_counts
+        in_degrees, out_degrees = self.get_degrees()
+        user_keyword_counts, _ = self.get_user_keyword_counts(keyword_path)
+        # get impacts
+        user_impacts = dict()
+        for user in in_degrees.keys():
+            user_impacts[user] = in_degrees[user] * 0.6 + \
+                out_degrees[user] * 0.3 + user_keyword_counts[user] * 0.1
+        return user_impacts
